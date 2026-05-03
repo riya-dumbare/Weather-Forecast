@@ -6,6 +6,12 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+import './config/redis.js';
+import './config/db.js';
+
+import authRoutes from './routes/auth.routes.js';
+import weatherRoutes from './routes/weather.routes.js';
+
 const app = express();
 const PORT = process.env.PORT||5000
 
@@ -13,6 +19,9 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
+
+app.use('/api/auth', authRoutes);
+app.use('/api/weather', weatherRoutes);
 
 app.get('/', (req, res) => {
     res.json({Message : 'Weather Forecast API is running!'});

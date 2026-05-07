@@ -13,7 +13,7 @@ import authRoutes from './routes/auth.routes.js';
 import weatherRoutes from './routes/weather.routes.js';
 import locationRoutes from './routes/location.routes.js';
 import alertRoutes from './routes/alert.routes.js';
-
+import { startCronJob } from './services/cron.service.js';
 const app = express();
 const PORT = process.env.PORT||5000
 
@@ -33,4 +33,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT,() => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    startCronJob();
 })

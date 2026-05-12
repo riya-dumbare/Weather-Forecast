@@ -7,15 +7,12 @@ const API_KEY = process.env.WEATHER_API_KEY;
 // Cache expiry time — 20 minutes in seconds
 const CACHE_TTL = 60 * 20;
 
-// ─────────────────────────────────────────
-// GET CURRENT WEATHER
-// ─────────────────────────────────────────
 export const getCurrentWeather = async (city) => {
 
-  // 1. Create a unique cache key for this city
+  // Create a unique cache key for this city
   const cacheKey = `weather:current:${city.toLowerCase()}`;
 
-  // 2. Check Redis first
+  // Check Redis first
   const cached = await redisClient.get(cacheKey);
 
   if (cached) {
@@ -26,7 +23,7 @@ export const getCurrentWeather = async (city) => {
 
   console.log(`🌐 Cache MISS for ${city} — calling API`);
 
-  // 3. Not in cache — call OpenWeatherMap
+  // Not in cache — call OpenWeatherMap
   const response = await axios.get(`${BASE_URL}/weather`, {
     params: {
       q: city,          // city name
@@ -37,7 +34,7 @@ export const getCurrentWeather = async (city) => {
 
   const weatherData = response.data;
 
-  // 4. Save to Redis with 20 min expiry
+  // Save to Redis with 20 min expiry
   await redisClient.setEx(
     cacheKey,           // key
     CACHE_TTL,          // seconds until expiry
@@ -47,9 +44,6 @@ export const getCurrentWeather = async (city) => {
   return { source: 'api', data: weatherData };
 };
 
-// ─────────────────────────────────────────
-// GET 5-DAY FORECAST
-// ─────────────────────────────────────────
 export const getForecast = async (city) => {
 
   // 1. Unique cache key for forecast
@@ -65,7 +59,7 @@ export const getForecast = async (city) => {
 
   console.log(`🌐 Cache MISS for forecast:${city} — calling API`);
 
-  // 3. Call OpenWeatherMap forecast endpoint
+  // Call OpenWeatherMap forecast endpoint
   // This returns weather every 3 hours for 5 days (40 data points)
   const response = await axios.get(`${BASE_URL}/forecast`, {
     params: {
@@ -77,7 +71,7 @@ export const getForecast = async (city) => {
 
   const forecastData = response.data;
 
-  // 4. Cache it
+
   await redisClient.setEx(
     cacheKey,
     CACHE_TTL,

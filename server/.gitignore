@@ -3,22 +3,18 @@ node_modules/
 server/node_modules/
 client/node_modules/
 
-# Environment variables
+# Environment
 .env
 server/.env
 client/.env
 
-# Build outputs
+# Build
 dist/
 build/
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
 
 # Logs
 *.log
-npm-debug.log*
-
-# Prisma
-*.db

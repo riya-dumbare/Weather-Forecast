@@ -1,8 +1,6 @@
 import { getCurrentWeather, getForecast } from '../services/weather.service.js';
 
-// ─────────────────────────────────────────
 // GET CURRENT WEATHER
-// ─────────────────────────────────────────
 export const fetchCurrentWeather = async (req, res) => {
   try {
     // Get city from query parameter: /api/weather/current?city=Mumbai
@@ -18,9 +16,13 @@ export const fetchCurrentWeather = async (req, res) => {
     const { data, source } = result;
 
     res.status(200).json({
-      source,           // 'cache' or 'api'
+      source,
       city: data.name,
       country: data.sys.country,
+      coordinates: {
+        lat: data.coord.lat,    // ← add this
+        lon: data.coord.lon     // ← add this
+      },
       temperature: {
         current: data.main.temp,
         feelsLike: data.main.feels_like,
@@ -28,8 +30,8 @@ export const fetchCurrentWeather = async (req, res) => {
         max: data.main.temp_max,
       },
       weather: {
-        main: data.weather[0].main,         // e.g. "Rain"
-        description: data.weather[0].description, // e.g. "light rain"
+        main: data.weather[0].main,
+        description: data.weather[0].description,
         icon: data.weather[0].icon,
       },
       humidity: data.main.humidity,

@@ -49,9 +49,7 @@ export const fetchCurrentWeather = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────
 // GET 5-DAY FORECAST
-// ─────────────────────────────────────────
 export const fetchForecast = async (req, res) => {
   try {
     const { city } = req.query;

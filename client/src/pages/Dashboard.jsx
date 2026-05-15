@@ -65,25 +65,28 @@ const Dashboard = () => {
 
   // Save current city to locations
   const handleSaveLocation = async () => {
-    if (!weather) return;
+  if (!weather) return;
 
-    try {
-      await saveLocation({
-        city: weather.city,
-        latitude: 0,
-        longitude: 0
-      });
-      setSaveMsg('✅ Location saved!');
-      fetchLocations(); // refresh list
+  const lat = weather.coordinates?.lat ?? 0;
+  const lon = weather.coordinates?.lon ?? 0;
 
-      // Clear message after 3 seconds
-      setTimeout(() => setSaveMsg(''), 3000);
+  console.log('Saving:', weather.city, lat, lon); // debug
 
-    } catch (err) {
-      setSaveMsg(err.response?.data?.error || '❌ Could not save location');
-      setTimeout(() => setSaveMsg(''), 3000);
-    }
-  };
+  try {
+    await saveLocation({
+      city: weather.city,
+      latitude: lat,
+      longitude: lon
+    });
+    setSaveMsg('✅ Location saved!');
+    fetchLocations();
+    setTimeout(() => setSaveMsg(''), 3000);
+  } catch (err) {
+    console.log('Error:', err.response?.data);
+    setSaveMsg(err.response?.data?.error || '❌ Could not save location');
+    setTimeout(() => setSaveMsg(''), 3000);
+  }
+};
 
   // Delete a saved location
   const handleDeleteLocation = async (id) => {

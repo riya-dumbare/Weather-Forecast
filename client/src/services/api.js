@@ -31,5 +31,6 @@ export const deleteLocation = (id) => api.delete(`/locations/${id}`);
 export const getAlerts = () => api.get('/alerts');
 export const createAlert = (data) => api.post('/alerts', data);
 export const deleteAlert = (id) => api.delete(`/alerts/${id}`);
-
+// City suggestions
+export const getCitySuggestions = (q) => api.get(`/weather/suggestions?q=${q}`);
 export default api;

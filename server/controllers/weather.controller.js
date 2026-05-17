@@ -96,3 +96,42 @@ export const fetchForecast = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch forecast data' });
   }
 };
+// GET CITY SUGGESTIONS
+export const fetchCitySuggestions = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.length < 2) {
+      return res.status(200).json({ suggestions: [] });
+    }
+
+    const response = await axios.get(
+      'http://api.openweathermap.org/geo/1.0/direct',
+      {
+        params: {
+          q,
+          limit: 5,
+          appid: process.env.WEATHER_API_KEY
+        }
+      }
+    );
+
+    const suggestions = response.data.map(item => ({
+      name: item.name,
+      country: item.country,
+      state: item.state || '',
+      lat: item.lat,
+      lon: item.lon,
+      // Display label like "Mumbai, MH, IN"
+      label: item.state
+        ? `${item.name}, ${item.state}, ${item.country}`
+        : `${item.name}, ${item.country}`
+    }));
+
+    res.status(200).json({ suggestions });
+
+  } catch (error) {
+    console.error('Suggestions error:', error.message);
+    res.status(500).json({ error: 'Failed to fetch suggestions' });
+  }
+};

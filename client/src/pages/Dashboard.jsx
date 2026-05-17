@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import WeatherCard from '../components/WeatherCard';
 import ForecastCard from '../components/ForecastCard';
 import LocationCard from '../components/LocationCard';
+import SearchBar from '../components/SearchBar';
 import {
   getCurrentWeather,
   getForecast,
@@ -35,33 +36,31 @@ const Dashboard = () => {
   };
 
   // Search weather for a city
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!city.trim()) return;
+const handleSearch = async (cityName) => {
+  if (!cityName.trim()) return;
 
-    setLoading(true);
-    setError('');
-    setWeather(null);
-    setForecast([]);
+  setLoading(true);
+  setError('');
+  setWeather(null);
+  setForecast([]);
 
-    try {
-      // Fetch current weather and forecast simultaneously
-      const [weatherRes, forecastRes] = await Promise.all([
-        getCurrentWeather(city),
-        getForecast(city)
-      ]);
+  try {
+    const [weatherRes, forecastRes] = await Promise.all([
+      getCurrentWeather(cityName),
+      getForecast(cityName)
+    ]);
 
-      setWeather(weatherRes.data);
-      setForecast(forecastRes.data.forecast);
+    setWeather(weatherRes.data);
+    setForecast(forecastRes.data.forecast);
 
-    } catch (err) {
-      setError(
-        err.response?.data?.error || 'City not found. Please try again.'
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err) {
+    setError(
+      err.response?.data?.error || 'City not found. Please try again.'
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Save current city to locations
   const handleSaveLocation = async () => {
@@ -108,22 +107,7 @@ const Dashboard = () => {
       <div className="max-w-4xl mx-auto p-6 space-y-6">
 
         {/* Search Bar */}
-        <form onSubmit={handleSearch} className="flex gap-3">
-          <input
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="Search city... (e.g. Mumbai, London, Tokyo)"
-            className="flex-1 border border-gray-300 rounded-xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm bg-white"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition disabled:opacity-50 shadow-sm"
-          >
-            {loading ? '...' : '🔍 Search'}
-          </button>
-        </form>
+        <SearchBar onSearch={handleSearch} />
 
         {/* Error Message */}
         {error && (

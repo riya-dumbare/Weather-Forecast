@@ -10,5 +10,5 @@ router.get('/current', fetchCurrentWeather);
 
 // GET /api/weather/forecast?city=Mumbai
 router.get('/forecast', fetchForecast);
-
+router.get('/suggestions', fetchCitySuggestions);
 export default router;
